@@ -1,8 +1,8 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -g
-SRCDIR = UnixLab/src
-OBJDIR = UnixLab/build
-TESTDIR = UnixLab/test
+SRCDIR = src
+OBJDIR = build
+TESTDIR = test
 TESTEXT = sh
 SRCEXT = c
 
