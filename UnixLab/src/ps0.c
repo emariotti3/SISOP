@@ -11,32 +11,38 @@
 #include <sys/types.h>
 #include <linux/limits.h>
 
-#define BUFF_SZ 20
+#define BUFF_SZ 100
 
 void ps0() {
     //Lists the name of each currently running process
     //and its PID.
-    int fd = 0;
+    int fdcomm = 0, fdstat = 0;
     struct dirent *d;
-    char buff[BUFF_SZ], path[PATH_MAX];
+    int pid;
+    char buffcomm[BUFF_SZ], buffstat[BUFF_SZ], pathcomm[PATH_MAX], pathstat[PATH_MAX], name[BUFF_SZ], state;
     DIR *dir = opendir("/proc");
     if(!dir){
         return;
     }
     while((d = readdir(dir))) {
         if (isdigit(*(d->d_name))) {
-          memset(path, 0, strlen(path));
-          memset(buff, '\0', PATH_MAX);
-          strcat(path,"/proc/");
-          strcat(path, d->d_name);
-          strcat(path, "/comm");
-          fd = open(path, O_RDONLY);
-          if (fd == -1){
+          snprintf(pathcomm, PATH_MAX, "/proc/%s/comm", d->d_name);
+          snprintf(pathstat, PATH_MAX, "/proc/%s/stat", d->d_name);
+          fdcomm = open(pathcomm, O_RDONLY);
+          if (fdcomm == -1){
               continue;
           }
-          read(fd, buff, PATH_MAX);
-          printf("%s %s\n", d->d_name, buff);
-          close(fd);
+          read(fdcomm, buffcomm, 10);
+          fdstat = open(pathstat, O_RDONLY);
+          if (fdstat == -1){
+              close(fdcomm);
+              continue;
+          }
+          read(fdstat, buffstat, BUFF_SZ);
+          sscanf(buffstat, "%d %s %c",&pid, name, &state);
+          printf("%d %s %s %c\n",pid, buffcomm, name, state);
+          close(fdcomm);
+          close(fdstat);
         }
     }
     closedir(dir);

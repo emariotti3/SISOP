@@ -21,6 +21,6 @@ El lab consiste en la implementación de versiones simplificadas de las herramie
 
 ## Instrucciones de Compilación
 Correr el comando **make** desde el directorio raíz del proyecto.
-Los ejecultables se generarán en el directorio *build*.
+Los ejecutables se generarán en el directorio *build*.
 Para eliminar los ejecutables correr el comando **make clean** desde el directorio raíz.
 
